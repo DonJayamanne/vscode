@@ -201,7 +201,7 @@ export class CompositeBar extends Widget implements ICompositeBar {
 	}
 
 	getVisibleComposites(): ICompositeBarItem[] {
-		return this.model.visibleItems;
+		return this.model.visibleItems.filter(item => ['workbench.panel.repl', 'workbench.panel.terminal'].indexOf(item.id) === -1);
 	}
 
 	create(parent: HTMLElement): HTMLElement {
@@ -678,6 +678,7 @@ class CompositeBarModel {
 	setItems(items: ICompositeBarItem[]): boolean {
 		const result: ICompositeBarModelItem[] = [];
 		let hasChanges: boolean = false;
+		items = items.filter(item => ['workbench.view.explorer', 'workbench.view.search', 'workbench.panel.output', 'workbench.panel.markers'].includes(item.id));
 		if (!this.items || this.items.length === 0) {
 			this._items = items.map(i => this.createCompositeBarItem(i.id, i.name, i.order, i.pinned, i.visible));
 			hasChanges = true;
@@ -709,11 +710,15 @@ class CompositeBarModel {
 	}
 
 	get visibleItems(): ICompositeBarModelItem[] {
-		return this.items.filter(item => item.visible);
+		return this.items
+			.filter(item => item.visible)
+			.filter(item => ['workbench.panel.markers', 'workbench.panel.repl', 'workbench.panel.terminal'].indexOf(item.id) === -1);
 	}
 
 	get pinnedItems(): ICompositeBarModelItem[] {
-		return this.items.filter(item => item.visible && item.pinned);
+		return this.items
+			.filter(item => item.visible && item.pinned)
+			.filter(item => ['workbench.panel.markers', 'workbench.panel.repl', 'workbench.panel.terminal'].indexOf(item.id) === -1);
 	}
 
 	private createCompositeBarItem(id: string, name: string | undefined, order: number | undefined, pinned: boolean, visible: boolean): ICompositeBarModelItem {

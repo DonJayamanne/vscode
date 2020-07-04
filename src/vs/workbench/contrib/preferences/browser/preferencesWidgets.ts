@@ -531,7 +531,8 @@ export class SettingsTargetsWidget extends Widget {
 
 		this.update();
 
-		this.settingsSwitcherBar.push([this.userLocalSettings, this.userRemoteSettings, this.workspaceSettings, folderSettingsAction]);
+		// this.settingsSwitcherBar.push([this.userLocalSettings, this.userRemoteSettings, this.workspaceSettings, folderSettingsAction]);
+		this.settingsSwitcherBar.push([this.userLocalSettings]);
 	}
 
 	get settingsTarget(): SettingsTarget | null {

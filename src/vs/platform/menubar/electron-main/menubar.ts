@@ -285,12 +285,12 @@ export class Menubar {
 		this.setMenuById(editMenu, 'Edit');
 		menubar.append(editMenuItem);
 
-		// Selection
-		const selectionMenu = new Menu();
-		const selectionMenuItem = new MenuItem({ label: this.mnemonicLabel(nls.localize({ key: 'mSelection', comment: ['&& denotes a mnemonic'] }, "&&Selection")), submenu: selectionMenu });
+		// // Selection
+		// const selectionMenu = new Menu();
+		// const selectionMenuItem = new MenuItem({ label: this.mnemonicLabel(nls.localize({ key: 'mSelection', comment: ['&& denotes a mnemonic'] }, "&&Selection")), submenu: selectionMenu });
 
-		this.setMenuById(selectionMenu, 'Selection');
-		menubar.append(selectionMenuItem);
+		// this.setMenuById(selectionMenu, 'Selection');
+		// menubar.append(selectionMenuItem);
 
 		// View
 		const viewMenu = new Menu();
@@ -306,19 +306,19 @@ export class Menubar {
 		this.setMenuById(gotoMenu, 'Go');
 		menubar.append(gotoMenuItem);
 
-		// Debug
-		const debugMenu = new Menu();
-		const debugMenuItem = new MenuItem({ label: this.mnemonicLabel(nls.localize({ key: 'mRun', comment: ['&& denotes a mnemonic'] }, "&&Run")), submenu: debugMenu });
+		// // Debug
+		// const debugMenu = new Menu();
+		// const debugMenuItem = new MenuItem({ label: this.mnemonicLabel(nls.localize({ key: 'mRun', comment: ['&& denotes a mnemonic'] }, "&&Run")), submenu: debugMenu });
 
-		this.setMenuById(debugMenu, 'Run');
-		menubar.append(debugMenuItem);
+		// this.setMenuById(debugMenu, 'Run');
+		// menubar.append(debugMenuItem);
 
-		// Terminal
-		const terminalMenu = new Menu();
-		const terminalMenuItem = new MenuItem({ label: this.mnemonicLabel(nls.localize({ key: 'mTerminal', comment: ['&& denotes a mnemonic'] }, "&&Terminal")), submenu: terminalMenu });
+		// // Terminal
+		// const terminalMenu = new Menu();
+		// const terminalMenuItem = new MenuItem({ label: this.mnemonicLabel(nls.localize({ key: 'mTerminal', comment: ['&& denotes a mnemonic'] }, "&&Terminal")), submenu: terminalMenu });
 
-		this.setMenuById(terminalMenu, 'Terminal');
-		menubar.append(terminalMenuItem);
+		// this.setMenuById(terminalMenu, 'Terminal');
+		// menubar.append(terminalMenuItem);
 
 		// Mac: Window
 		let macWindowMenuItem: MenuItem | undefined;

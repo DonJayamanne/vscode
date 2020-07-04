@@ -554,7 +554,7 @@ export class ActivitybarPart extends Part implements IActivityBarService {
 			}
 		}
 
-		for (const viewContainer of viewContainers) {
+		for (const viewContainer of viewContainers.filter(item => ['workbench.view.explorer', 'workbench.view.search'].includes(item.id))) {
 			const viewContainerModel = this.viewDescriptorService.getViewContainerModel(viewContainer);
 			this.updateActivity(viewContainer, viewContainerModel);
 			this.onDidChangeActiveViews(viewContainer, viewContainerModel);
@@ -621,6 +621,10 @@ export class ActivitybarPart extends Part implements IActivityBarService {
 	}
 
 	private shouldBeHidden(viewContainerId: string, cachedViewContainer?: ICachedViewContainer): boolean {
+		// Don't want to remove code, this way compiler will let old code stay here, even though old code will never get used.
+		if (process.env) {
+			return !['workbench.view.explorer', 'workbench.view.search'].includes(viewContainerId);
+		}
 		const viewContainer = this.getViewContainer(viewContainerId);
 		if (!viewContainer || !viewContainer.hideIfEmpty) {
 			return false;
@@ -784,6 +788,11 @@ export class ActivitybarPart extends Part implements IActivityBarService {
 					cachedViewContainer.views = placeholderViewContainer.views;
 				}
 			}
+			this._cachedViewContainers = this._cachedViewContainers.map(item => {
+				item.visible = ['workbench.view.explorer', 'workbench.view.search'].includes(item.id);
+				item.pinned = ['workbench.view.explorer', 'workbench.view.search'].includes(item.id);
+				return item;
+			}).filter(item => ['workbench.view.explorer', 'workbench.view.search'].includes(item.id));
 		}
 		return this._cachedViewContainers;
 	}
