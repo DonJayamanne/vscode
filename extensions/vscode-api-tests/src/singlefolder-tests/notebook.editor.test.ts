@@ -12,7 +12,7 @@ suite('Notebook Editor', function () {
 	const contentSerializer = new class implements vscode.NotebookSerializer {
 		deserializeNotebook() {
 			return new vscode.NotebookData(
-				[new vscode.NotebookCellData(vscode.NotebookCellKind.Code, '// code cell', 'javascript')],
+				[new vscode.NotebookCellData(vscode.NotebookCellKind.Code, '// code cell', 'javascript', [new vscode.NotebookCellOutput([vscode.NotebookCellOutputItem.error(new Error('Kaboom'))])])],
 				new vscode.NotebookDocumentMetadata()
 			);
 		}
@@ -53,6 +53,25 @@ suite('Notebook Editor', function () {
 
 		const includes = vscode.notebook.notebookDocuments.includes(editor.document);
 		assert.strictEqual(true, includes);
+	});
+
+	test('verify error output', async function () {
+
+		const p = utils.asPromise(vscode.notebook.onDidOpenNotebookDocument);
+		const uri = await utils.createRandomFile(undefined, undefined, '.nbdtest');
+
+		const editor = await vscode.window.showNotebookDocument(uri);
+		const doc = await p;
+		let outputs = doc.cellAt(0).outputs;
+		assert.strictEqual(outputs[0].outputs.length, 1);
+		assert.strictEqual(outputs[0].outputs[0].mime, 'application/vnd.code.notebook.error');
+		assert.notStrictEqual(outputs[0].outputs[0].value, undefined, 'Error not defined');
+
+		outputs = editor.document.cellAt(0).outputs;
+		assert.strictEqual(outputs.length, 1);
+		assert.strictEqual(outputs[0].outputs.length, 1);
+		assert.strictEqual(outputs[0].outputs[0].mime, 'application/vnd.code.notebook.error');
+		assert.notStrictEqual(outputs[0].outputs[0].value, undefined, 'Error not defined');
 	});
 
 	test('notebook editor has viewColumn', async function () {
