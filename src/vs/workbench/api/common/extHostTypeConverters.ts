@@ -1553,7 +1553,9 @@ export namespace NotebookCellOutputItem {
 	export function to(item: notebooks.IOutputItemDto): types.NotebookCellOutputItem {
 
 		let value: Uint8Array | unknown;
-		if (item.value instanceof VSBuffer) {
+		if (item.valueBytes) {
+			value = item.valueBytes;
+		} else if (item.value instanceof VSBuffer) {
 			value = item.value.buffer;
 		} else {
 			value = item.value;
