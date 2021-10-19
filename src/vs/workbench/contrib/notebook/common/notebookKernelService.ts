@@ -26,6 +26,7 @@ export interface INotebookKernelChangeEvent {
 	label?: true;
 	description?: true;
 	detail?: true;
+	category?: true;
 	supportedLanguages?: true;
 	hasExecutionOrder?: true;
 }
@@ -44,6 +45,7 @@ export interface INotebookKernel {
 	label: string;
 	description?: string;
 	detail?: string;
+	category?: string;
 	supportedLanguages: string[];
 	implementsInterrupt?: boolean;
 	implementsExecutionOrder?: boolean;

@@ -14,7 +14,7 @@ import { ExtensionIdentifier } from 'vs/platform/extensions/common/extensions';
 import { ServicesAccessor } from 'vs/platform/instantiation/common/instantiation';
 import { ILabelService } from 'vs/platform/label/common/label';
 import { ILogService } from 'vs/platform/log/common/log';
-import { IQuickInputButton, IQuickInputService, IQuickPickItem } from 'vs/platform/quickinput/common/quickInput';
+import { IQuickInputButton, IQuickInputService, IQuickPickItem, QuickPickInput } from 'vs/platform/quickinput/common/quickInput';
 import { Registry } from 'vs/platform/registry/common/platform';
 import { ThemeIcon } from 'vs/platform/theme/common/themeService';
 import type { SelectKernelReturnArgs } from 'vs/workbench/api/common/extHostNotebookKernels';
@@ -156,13 +156,14 @@ registerAction2(class extends Action2 {
 				iconClass: ThemeIcon.asClassName(configureKernelIcon),
 				tooltip: nls.localize('notebook.promptKernel.setDefaultTooltip', "Set as default for '{0}' notebooks", editor.textModel.viewType)
 			};
-			const picks: (KernelPick | IQuickPickItem)[] = all.map(kernel => {
+			const picks: KernelPick[] = all.map(kernel => {
 				const res = <KernelPick>{
 					kernel,
 					picked: kernel.id === selected?.id,
 					label: kernel.label,
 					description: kernel.description,
 					detail: kernel.detail,
+					category: kernel.category,
 					buttons: [configButton]
 				};
 				if (kernel.id === selected?.id) {
@@ -174,14 +175,32 @@ registerAction2(class extends Action2 {
 				}
 				{ return res; }
 			});
+			let quickPickItems:QuickPickInput<IQuickPickItem | KernelPick>[] = picks;
 			if (!all.length) {
-				picks.push({
+				quickPickItems.push({
 					id: 'install',
 					label: nls.localize('installKernels', "Install kernels from the marketplace"),
 				});
+			} else {
+				quickPickItems = [];
+				const sortedKernels = new Map<string, KernelPick[]>();
+				picks.forEach(item => {
+					const list = sortedKernels.get(item.category || '') || [];
+					list.push(item);
+					sortedKernels.set(item.category || '', list);
+				});
+				sortedKernels.forEach((items, category) => {
+					if (category) {
+						quickPickItems.push({
+							type:'separator',
+							label: category
+						});
+					}
+					quickPickItems.push(...items);
+				});
 			}
 
-			const pick = await quickInputService.pick(picks, {
+			const pick = await quickInputService.pick(quickPickItems, {
 				placeHolder: selected
 					? nls.localize('prompt.placeholder.change', "Change kernel for '{0}'", labelService.getUriLabel(notebook.uri, { relative: true }))
 					: nls.localize('prompt.placeholder.select', "Select kernel for '{0}'", labelService.getUriLabel(notebook.uri, { relative: true })),
