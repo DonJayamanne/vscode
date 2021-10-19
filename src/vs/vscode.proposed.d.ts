@@ -1590,6 +1590,7 @@ declare module 'vscode' {
 
 		//todo@API validate this works
 		asWebviewUri(localResource: Uri): Uri;
+		category?: string;
 	}
 
 	export namespace notebooks {
